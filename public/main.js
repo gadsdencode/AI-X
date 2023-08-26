@@ -19,7 +19,6 @@ socket.on('botMessage', (message) => {
   messageElement.textContent = `Bot: ${message}`;
   chatOutput.appendChild(messageElement);
 });
-var socket = io();
 
 document.getElementById('send').onclick = function() {
   var message = document.getElementById('chat-input').value;
