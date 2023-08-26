@@ -25,7 +25,7 @@ socket.on("connection", (client) => {
 
     // generate bot response
     const response = await axios.post(
-      "https://api.openai.com/v1/engines/davinci-codex/completions",
+      "https://api.openai.com/v1/chat/completions",
       {
         prompt: msg,
         max_tokens: 50,
