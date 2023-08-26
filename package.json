@@ -13,5 +13,8 @@
     "express": "^4.17.2",
     "openai": "^4.0.0",
     "socket.io": "^4.4.0"
+  },
+  "devDependencies": {
+    "sanitize-html": "^2.11.0"
   }
 }
