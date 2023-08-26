@@ -24,19 +24,7 @@ socket.on("connection", (client) => {
       .insert([{ user: 'user', text: msg }]);
 
     // generate bot response
-    const response = await axios.post(
-      "https://api.openai.com/v1/engines/davinci-codex/completions",
-      {
-        prompt: msg,
-        max_tokens: 50,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${openAiKey}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    // Updated code goes here
 
     const resMessage = response.data.choices[0].text.trim();
     
