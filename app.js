@@ -45,7 +45,10 @@ io.on('connection', (socket) => {
 
     await supabase
       .from('messages')
-      .insert([{ user: 'bot', text: botMessage }]);
+      .insert([
+        { user: 'user', text: sanitizedMessage },
+        { user: 'bot', text: botMessage }
+      ]);
 
     socket.emit('botMessage', botMessage);
   });

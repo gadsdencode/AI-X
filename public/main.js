@@ -3,15 +3,21 @@ const chatInput = document.getElementById("chat-input");
 const chatOutput = document.getElementById("chat-output");
 const sendButton = document.getElementById("send");
 
-sendButton.addEventListener("click", () => {
-  let msg = chatInput.value;
-  chatOutput.innerHTML += `You: ${msg}<br>`;
-  socket.emit("userMessage", msg);
+sendButton.addEventListener('click', () => {
+  const message = chatInput.value;
+  const messageElement = document.createElement('div');
+  messageElement.classList.add('message', 'user-message');
+  messageElement.textContent = `You: ${message}`;
+  chatOutput.appendChild(messageElement);
+  socket.emit('userMessage', message);
   chatInput.value = '';
 });
 
-socket.on("botMessage", function(msg){
-  chatOutput.innerHTML += `Bot: ${msg}<br>`;
+socket.on('botMessage', (message) => {
+  const messageElement = document.createElement('div');
+  messageElement.classList.add('message', 'bot-message');
+  messageElement.textContent = `Bot: ${message}`;
+  chatOutput.appendChild(messageElement);
 });
 var socket = io();
 
