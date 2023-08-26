@@ -1,15 +1,16 @@
 {
   "name": "AI-X",
   "version": "1.0.0",
-  "description": "AI chatbot application", 
+  "description": "AI chatbot application",
   "main": "app.js",
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^1.25.2",
     "axios": "^0.24.0",
+    "dotenv": "^16.3.1",
     "express": "^4.17.2",
-    "socket.io": "^4.4.0",
-    "@supabase/supabase-js": "^1.25.2"
+    "socket.io": "^4.4.0"
   }
 }

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require("express");
 const http = require("http");
 const io = require("socket.io");
@@ -9,8 +11,8 @@ const server = http.createServer(app);
 const socket = io(server);
 
 // API-Key and URL from your Supabase
-const supabase = createClient("your-supabase-url", "your-supabase-key");
-const openAiKey = "your-openai-key";
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+const openAiKey = process.env.OPENAI_API_KEY;
 
 app.use(express.static("public"));
 
