@@ -1,53 +1,54 @@
-require('dotenv').config();
-
-const express = require("express");
-const http = require("http");
-const io = require("socket.io");
-const axios = require("axios");
-const { createClient } = require("@supabase/supabase-js");
+const fs = require('fs');
+const https = require('https');
+const express = require('express');
+const socketIO = require('socket.io');
+const axios = require('axios');
+const { createClient } = require('@supabase/supabase-js');
+const sanitizeHtml = require('sanitize-html');
 
 const app = express();
-const server = http.createServer(app);
-const socket = io(server);
+const server = https.createServer({
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+}, app);
+const io = socketIO(server);
 
-// API-Key and URL from your Supabase
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const openAiKey = process.env.OPENAI_API_KEY;
 
-app.use(express.static("public"));
+app.use(express.static('public'));
 
-socket.on("connection", (client) => {
-  client.on("userMessage", async (msg) => {
-    // save user message in supabase
+io.on('connection', (socket) => {
+  socket.on('userMessage', async (message) => {
+    const sanitizedMessage = sanitizeHtml(message);
+
     await supabase
-      .from("messages")
-      .insert([{ user: 'user', text: msg }]);
+      .from('messages')
+      .insert([{ user: 'user', text: sanitizedMessage }]);
 
-    // generate bot response
     const response = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
+      'https://api.openai.com/v1/chat/completions',
       {
-        prompt: msg,
+        prompt: sanitizedMessage,
         max_tokens: 50,
-        model: "gpt-4",
+        model: 'gpt-4',
       },
       {
         headers: {
           Authorization: `Bearer ${openAiKey}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       }
     );
 
-    const resMessage = response.data.choices[0].text.trim();
-    
-    // save bot message in supabase
+    const botMessage = response.data.choices[0].text.trim();
+
     await supabase
-      .from("messages")
-      .insert([{ user: 'bot', text: resMessage }]);
-      
-    client.emit("botMessage", resMessage);
+      .from('messages')
+      .insert([{ user: 'bot', text: botMessage }]);
+
+    socket.emit('botMessage', botMessage);
   });
 });
 
-server.listen(3000, () => console.log("Server started at port 3000"));
+server.listen(3000, () => console.log('Server started at port 3000'));
